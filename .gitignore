@@ -1,0 +1,8 @@
+.htaccess
+old
+polaris/cache
+polaris/backup
+polaris/log
+polaris/config.php
+templates/*
+debug.php
