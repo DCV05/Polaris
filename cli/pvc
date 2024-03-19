@@ -14,7 +14,7 @@ include( '/var/www/html/polaris/polaris/polaris.php' );
 function version_control()
 {
   // Escaneamos los backups del directorio raíz
-  $arr = scandir( '/var/www/html/polaris/polaris/backup' );
+  $arr = scandir( '/var/www/html/polaris/polaris/storage/app/backup/' );
   $num_files = count( $arr ) - 2;
 
   // Iteramos los ficheros
@@ -26,7 +26,7 @@ function version_control()
 
     // Capturamos las variables de formato
     $db_name = explode( '_', $backup )[0];
-    $filemtime = date( "d/m/y H:i:s", @filemtime( '/var/www/html/polaris/polaris/backup/' . $backup ) );
+    $filemtime = date( "d/m/y H:i:s", @filemtime( '/var/www/html/polaris/polaris/storage/app/backup/' . $backup ) );
     $backup = str_replace( array( 'polaris_', '.sql' ), '', $backup );
     $backup = substr( $backup, 0, 6 );
     $key_buffer = ( $key - 2 );
@@ -66,7 +66,7 @@ function restore_version( $id )
 {
   // Definimos la ruta de los backups
   $db_name = '';
-  $path_backup = '/var/www/html/polaris/polaris/backup/';
+  $path_backup = '/var/www/html/polaris/polaris/storage/app/backup/';
 
   // Analizamos los backups
   $arr = scandir( $path_backup );

@@ -66,8 +66,8 @@ function pl_dump( $arr, $return = false )
 function pl_log( $arr, $replace = false )
 {
   // Si no existe el directorio de los logs, lo creamos
-  if( !is_dir( "{$_SESSION['document_root']}/log/" ) )
-    mkdir( "{$_SESSION['document_root']}/log/", 0755, true );
+  if( !is_dir( "{$_SESSION['document_root']}/storage/app/log/" ) )
+    mkdir( "{$_SESSION['document_root']}/storage/app/log/", 0755, true );
 
   // Dependiendo del parámetro $replace, remplazamos el contenido del log o no
   $mode = $replace ? 'w+' : 'a+';
@@ -99,7 +99,7 @@ function pl_log( $arr, $replace = false )
   $log_text = pl_dump( $arr, true );
 
   // Abrimos el archivo log con permisos de lectura y escritura
-  $log_file = fopen( $_SESSION['document_root'] . '/log/pl_log.txt', $mode );
+  $log_file = fopen( $_SESSION['document_root'] . '/storage/app/log/pl_log.txt', $mode );
 
   // Escribimos el contenido en el txt
   fwrite( $log_file, "\n{$chr} \n{$file} | {$line} | {$function} | {$date}\n{$chr} \n\n" );
@@ -107,7 +107,7 @@ function pl_log( $arr, $replace = false )
 
   // Movemos el puntero de nuevo al inicio del txt y capturamos el contenido
   rewind( $log_file );
-  $final_log_content = fread( $log_file, filesize( $_SESSION['document_root'] . '/log/pl_log.txt' ) );
+  $final_log_content = fread( $log_file, filesize( $_SESSION['document_root'] . '/storage/app/log/pl_log.txt' ) );
 
   // Cerramos el archivo
   fclose( $log_file );
@@ -122,7 +122,7 @@ function pl_log( $arr, $replace = false )
  */
 function pl_vc ()
 {
-  $arr = scandir( 'backup' );
+  $arr = scandir( '/var/www/html/polaris/polaris/storage/app/backup/' );
 
   $num_files = count( $arr ) - 2;
 
@@ -131,7 +131,7 @@ function pl_vc ()
     if( in_array( $backup, [ '.', '..' ] ) )
       continue;
 
-    $filemtime = date( "d/m/y H:i:s", @filemtime( '/var/www/html/polaris/polarisbackup/' . $backup ) );
+    $filemtime = date( "d/m/y H:i:s", @filemtime( '/var/www/html/polaris/polaris/storage/app/backup/' . $backup ) );
     $backup = str_replace( array( 'polaris_', '.sql' ), '', $backup );
     $backup = substr( $backup, 0, 20 );
     $key_buffer = ( $key - 2 );
@@ -220,13 +220,13 @@ function pl_curl( $url, $data = [] )
   // Ejecutamos la consulta
   $result = curl_exec( $ch );
 
+  // Capturamos el código http
   $http_code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
   
   // Cerramos el canal
   curl_close( $ch );
 
   return [ $result, $http_code ];
-
 }
 
 ?>

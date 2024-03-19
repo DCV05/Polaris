@@ -8,7 +8,7 @@ class pl_template_engine
 
 	// Variables de caché
 	protected $cache_enabled  = true;
-	protected $cache_path     = 'cache';
+	protected $cache_path     = '/var/www/html/polaris/polaris/storage/cache';
 	protected $cache_lifetime = 300;
 
 	/**
@@ -21,7 +21,7 @@ class pl_template_engine
 		$template_path,
 		$cache_enabled  = true,
 		$cache_lifetime = 10,
-		$cache_path     = 'cache'
+		$cache_path     = '/var/www/html/polaris/polaris/storage/cache'
 	)
 	{
 		$this->template_path    = $template_path;

@@ -9,19 +9,15 @@ ini_set( 'display_errors', 1 );
 ini_set( 'display_startup_errors', 1 );
 error_reporting( E_ALL );
 
-// Definimos las constantes
-define( 'DB_SERVER'   , getenv( 'POLARIS_SERVER'   ) );
-define( 'DB_USER'     , getenv( 'POLARIS_USER'     ) );
-define( 'DB_PASSWORD' , getenv( 'POLARIS_PASSWORD' ) );
-
 // Incluímos las librerías de Polaris
-include( 'model/orm.php'            ); // ORM
-include( 'model/model.php'          ); // MySQL y MongoDB
-include( 'model/redis.php'          ); // Redis
-include( 'view/template_engine.php' ); // Motor de plantillas
+include( 'config/config.php'                );
+include( 'app/models/orm.php'               ); // ORM
+include( 'app/models/model.php'             ); // MySQL y MongoDB
+include( 'app/redis/redis.php'              ); // Redis
+include( 'app/view_engine/view_engine.php'  ); // Motor de plantillas
 
-include( 'sdk.php'   );
-include( 'linux.php' );
+include( 'app/lib/sdk.php'   );
+include( 'app/lib/linux.php' );
 
 function pl_session()
 {
@@ -33,11 +29,11 @@ function pl_session()
 
   /*
   Array | $_SERVER
-      [POLARIS_SERVER] => 10.8.0.1
-      [POLARIS_USER] => root
+      [POLARIS_SERVER] => ********
+      [POLARIS_USER] => ********
       [POLARIS_PASSWORD] => *******
       [POLARIS_DB] => ******
-      [HTTP_HOST] => 10.8.0.1
+      [HTTP_HOST] => ********
       [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0
       [HTTP_ACCEPT] => text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*\/*;q=0.8
       [HTTP_ACCEPT_LANGUAGE] => es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3
@@ -47,20 +43,20 @@ function pl_session()
       [HTTP_PRAGMA] => no-cache
       [HTTP_CACHE_CONTROL] => no-cache
       [PATH] => /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-      [SERVER_SIGNATURE] => <address>Apache/2.4.57 (Debian) Server at 10.8.0.1 Port 80</address>
+      [SERVER_SIGNATURE] => <address>Apache/2.4.57 (Debian) Server at ******** Port 80</address>
 
       [SERVER_SOFTWARE] => Apache/2.4.57 (Debian)
-      [SERVER_NAME] => 10.8.0.1
-      [SERVER_ADDR] => 10.8.0.1
+      [SERVER_NAME] => ********
+      [SERVER_ADDR] => ********
       [SERVER_PORT] => 80
-      [REMOTE_ADDR] => 10.8.0.2
+      [REMOTE_ADDR] => ********
       [DOCUMENT_ROOT] => /var/www/html
       [REQUEST_SCHEME] => http
       [CONTEXT_PREFIX] => 
       [CONTEXT_DOCUMENT_ROOT] => /var/www/html
-      [SERVER_ADMIN] => webmaster@localhost
+      [SERVER_ADMIN] => ********
       [SCRIPT_FILENAME] => /var/www/html/polaris/debug.php
-      [REMOTE_PORT] => 49833
+      [REMOTE_PORT] => *****
       [GATEWAY_INTERFACE] => CGI/1.1
       [SERVER_PROTOCOL] => HTTP/1.1
       [REQUEST_METHOD] => GET
@@ -76,17 +72,17 @@ function pl_session()
 
   // Capturamos las variables de la SESSION
   $_SESSION['polaris'] = [
-      'domain' 		=> $_SERVER['HTTP_HOST']
-  ,	'url_abs' 		=> $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $url_relative
+    'domain' 		    => $_SERVER['HTTP_HOST']
+  ,	'url_abs' 		  => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $url_relative
   ,	'url_relative' 	=> $url_relative
-  ,	'url_get' 		=> $_GET
+  ,	'url_get' 		  => $_GET
   ,	'document_root'	=> $_SERVER['DOCUMENT_ROOT'] . '/polaris'
   ];
 
   // Saneamos las variables del GET aplicando un filtro de URLs
   $_SESSION['polaris']['url_get'] = filter_var_array( $_SESSION['polaris']['url_get'], FILTER_SANITIZE_URL );
 
-  pl_router();
+  // pl_router();
 }
 
 function pl_router()

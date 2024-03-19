@@ -1,8 +1,7 @@
-.htaccess
+polaris/resources/views/*
+polaris/storage/app/backup/*
+polaris/storage/app/log/*
+polaris/storage/cache/log/*
+polaris/config/config.php
 old
-polaris/cache
-polaris/backup
-polaris/log
-polaris/config.php
-templates/*
 debug.php
