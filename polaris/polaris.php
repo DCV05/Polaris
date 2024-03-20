@@ -15,6 +15,7 @@ include( 'app/models/orm.php'               ); // ORM
 include( 'app/models/model.php'             ); // MySQL y MongoDB
 include( 'app/redis/redis.php'              ); // Redis
 include( 'app/view_engine/view_engine.php'  ); // Motor de plantillas
+include( 'routes/route.php'                 ); // Rutas de acceso
 
 include( 'app/lib/sdk.php'   );
 include( 'app/lib/linux.php' );
@@ -22,10 +23,10 @@ include( 'app/lib/linux.php' );
 function pl_session()
 {
   // Iniciamos la sesión
-  if( session_id() == '' )
-      session_start();
-
-  // pl_dump( $_SERVER );
+  if( !session_id() )
+  {
+    session_start();
+  }
 
   /*
   Array | $_SERVER
