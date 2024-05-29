@@ -1,7 +1,5 @@
 # Polaris
 
-Polaris is a PHP framework designed to simplify the development of robust and scalable web applications. This framework includes an ORM, models for MySQL, migration control, SQL cache management with Redis, MySQL version control via console, a template engine, and a router.
-
 ## Features
 
 - **ORM (Object-Relational Mapping):** Easily interact with MySQL databases.
