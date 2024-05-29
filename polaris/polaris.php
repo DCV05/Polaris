@@ -10,7 +10,7 @@ ini_set( 'display_startup_errors', 1 );
 error_reporting( E_ALL );
 
 // Incluímos las librerías de Polaris
-include( 'config/config.php'                );
+include( 'app/config/config.php'                );
 include( 'app/models/orm.php'               ); // ORM
 include( 'app/models/model.php'             ); // MySQL y MongoDB
 include( 'app/redis/redis.php'              ); // Redis
@@ -83,31 +83,6 @@ function pl_session()
   // Saneamos las variables del GET aplicando un filtro de URLs
   $_SESSION['polaris']['url_get'] = filter_var_array( $_SESSION['polaris']['url_get'], FILTER_SANITIZE_URL );
 
-  // pl_router();
-}
-
-function pl_router()
-{
-  if( $_SESSION['polaris']['url_relative'] > '' )
-  {
-    $arr_url = explode( '/', $_SESSION['polaris']['url_relative'] );
-
-    $query = new Select( 'polaris' );
-
-    $result = $query
-      ->select( [
-          [ 'polaris_domains' => [] ]
-      ] )
-      ->from( 'polaris_domains' )
-      ->where( [ 
-          [ "polaris_domains.title = '{$arr_url[1]}'" ]
-      ] )
-      ->exec_sql();
-
-    if( count( $result ) == 0 )
-        print 'ko'; exit;
-      //pl_redirect( 'view/templates/404.html' );
-  }
 }
 
 ?>

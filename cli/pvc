@@ -4,17 +4,21 @@
 
 // Capturamos la ip del cliente que ejecuta el comando
 $ip = explode( ' ', $_SERVER['SSH_CLIENT'] )[0];
-
 define( 'IP', $ip );
 
+// Definimos las credenciales de MySQL
+$path = "/var/www/html/ai/polaris/polaris";
+define( 'PATH', $path );
+define( 'PATH_BACKUP', PATH . '/storage/app/backup/' );
+
 // Incluímos Polaris
-include( '/var/www/html/polaris/polaris/polaris.php' );
+include( "{$path}/polaris.php" );
 
 // Función para mostrar los Backups de Polaris
 function version_control()
 {
   // Escaneamos los backups del directorio raíz
-  $arr = scandir( '/var/www/html/polaris/polaris/storage/app/backup/' );
+  $arr = scandir( PATH . '/storage/app/backup/' );
   $num_files = count( $arr ) - 2;
 
   // Iteramos los ficheros
@@ -26,9 +30,12 @@ function version_control()
 
     // Capturamos las variables de formato
     $db_name = explode( '_', $backup )[0];
-    $filemtime = date( "d/m/y H:i:s", @filemtime( '/var/www/html/polaris/polaris/storage/app/backup/' . $backup ) );
-    $backup = str_replace( array( 'polaris_', '.sql' ), '', $backup );
+    $filemtime = date( "d/m/y H:i:s", @filemtime( PATH . '/storage/app/backup/' . $backup ) );
+
+    // Calculamos el nombre del hash a mostrar
+    $backup = str_replace( array( $db_name, '.sql', '_' ), '', $backup );
     $backup = substr( $backup, 0, 6 );
+
     $key_buffer = ( $key - 2 );
 
     // Formato ASCII
@@ -45,20 +52,45 @@ function version_control()
 }
 
 // Función para crear un backup antes de restaurar una versión
-function create_version( $db_name, $path_backup )
+function create_version( $db_name )
 {
-  // Inicializamos el MySQL
+  // Inicializamos el MySQL y realizamos el backup
   $db = new pl_model( $db_name );
-
-  // Calculamos el nombre del backup usando la fecha actual
-  $date = floor( microtime(true) * 1000 );
-  $hash = hash( 'ripemd160', $date );
-
-  // Realizamos la consulta
-  $backup_file_name = $db->pl_migration_backup_database( DB_SERVER, DB_USER, DB_PASSWORD, $db_name, $path_backup, IP );
+  $backup_file_name = $db->pl_migration_backup_database( DB_SERVER, DB_USER, DB_PASSWORD, $db_name, PATH_BACKUP, IP );
 
   // Retornamos el nombre del fichero SQL que almacena el Backup
   return $backup_file_name;
+}
+
+// Función para mostrar las bases de datos de MySQL
+function show_databases()
+{
+  // Ejecutamos el comando
+  $cmd = 'mysql -u ' . DB_USER . " -p'" . DB_PASSWORD . "' --skip-column-names -e 'SHOW DATABASES;'";
+  $output = shell_exec($cmd);
+
+  // Convierte la salida en un array y movemos el puntero al primer elemento
+  $databases = explode( "\n", trim( $output ) );
+  array_shift( $databases );
+  $db_count = count( $databases );
+
+  // Imprimimos el array de bases de datos
+  foreach ( $databases as $key => $database )
+  {
+
+    // Formato ASCII
+    if( ( $key ) == 0 )
+      $chr = "\u{250C} {$key} - ";
+    elseif( ( $key ) === $db_count - 1 )
+      $chr = "\u{2514} {$key} - ";
+    else
+      $chr = "\u{251C} {$key} - ";
+
+    // Imprimimos los datos de la DB
+    echo $chr . $database . "\n";
+  }
+
+  return $databases;
 }
 
 // Función para restaurar una versión específica de MySQL
@@ -66,15 +98,14 @@ function restore_version( $id )
 {
   // Definimos la ruta de los backups
   $db_name = '';
-  $path_backup = '/var/www/html/polaris/polaris/storage/app/backup/';
 
   // Analizamos los backups
-  $arr = scandir( $path_backup );
+  $arr = scandir( PATH_BACKUP );
   foreach ( $arr as $item )
   {
     if( count( $arr ) == 0 )
     {
-      echo "No exiten backups en {$path_backup}";
+      echo "No backups found in: " . PATH_BACKUP . '\n';
       break;
     }
 
@@ -86,31 +117,19 @@ function restore_version( $id )
     $db_name = $arr_backup[0];
     $backup_id = $arr_backup[1];
 
-    // Si coincide, preguntamos por su restauración
+    // Restauramos
     if( strlen( $id ) === 6 && substr( $id, 0, 6 ) === substr( $backup_id, 0, 6 ) )
     {
-      // Capturamos el input del usuario por consola
-      echo "¿Seguro que quieres restaurar {$db_name}? \n1. Sí\n2. No\n";
-      $input = fgets( STDIN );
-      $input = trim( $input );
 
-      if( $input == 1 )
-      {
-        // Comando de Linux
-        $cmd = 'mysql -u ' . DB_USER . ' -p' . "'" . DB_PASSWORD . "'" . ' ' . $db_name . ' < ' . $path_backup . '/' . $item;
-
-        // Ejecutamos el comando
-        exec( $cmd );
+      try {
+        $cmd = 'mysql -u ' . DB_USER . ' -p' . "'" . DB_PASSWORD . "'" . ' ' . $db_name . ' < ' . PATH_BACKUP . '/' . $item;
 
         // Creamos un backup de la versión de MySQL anterior a la restauración
-        create_version( $db_name, $path_backup );
+        exec( $cmd );
+        create_version( $db_name, PATH_BACKUP );
 
-        print "Base de datos restaurada\n";
-      }
-      else
-      {
-        break;
-      }
+        print "Database restored\n";
+      } catch ( \Exception $e ) {}
 
     }
   }
@@ -118,11 +137,32 @@ function restore_version( $id )
 
 if( isset( $argv[1] ) )
 {
-  if( $argv[1] === 'restore' )
-    if( isset( $argv[2] ) )
-      restore_version( $argv[2] );
-    else
-      print "ID del Backup requerido\n";
+  switch ( $argv[1] ) {
+    case 'restore':
+      if( isset( $argv[2] ) )
+        restore_version( $argv[2] );
+      else
+        print "Backup ID required\n";
+      break;
+
+    case 'show':
+      show_databases();
+      break;
+
+    case 'create':
+      $databases = show_databases();
+      
+      // Input para seleccionar la base de datos a hacer backup
+      echo "Select the database to backup > ";
+      $database_id = trim( fgets( STDIN ) );
+
+      // Creamos el backup según el índice insertado
+      create_version( $databases[ $database_id ] );
+      break;
+
+    default:
+      break;
+  }
 }
 else
 {

@@ -3,7 +3,7 @@
 function pl_linux_exec( $cmd )
 {
     // Inicializamos las variables a retornar
-    $output = null;
+    $output      = null;
     $return_code = null;
 
     // Ejecutamos el comando

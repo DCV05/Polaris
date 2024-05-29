@@ -13,9 +13,10 @@ abstract class Query {
 // Clase delete
 class Delete extends Query
 {
-  public function __construct( $database_name )
+  public function __construct( $database_name, $db = null )
   {
     $this->database_name = $database_name;
+    $this->db = $db;
   }
 
   // Inicializamos las variables utilizadas en la consulta
@@ -75,15 +76,20 @@ class Delete extends Query
   // Función para ejecutar el SQL
   public function exec_sql()
   {
-    $db = new pl_model( $this->database_name );
-
     // Creamos la consulta
     $sql = $this->create_sql();
 
-    // Ejecutamos la consulta
-    $query = $db->pl_query( $sql );
+    if( $this->db == null )
+    {
+      $db = new pl_model( $this->database_name );
 
-    $db->pl_close();
+      // Ejecutamos la consulta
+      $query = $db->pl_query( $sql );
+    }
+    else
+    {
+      $query = $this->db->pl_query( $sql );
+    }
 
     return $query;
   }
@@ -92,9 +98,11 @@ class Delete extends Query
 // Clase Update
 class Update extends Query
 {
-  public function __construct( $database_name )
+  // Asignamos el nombre de la base de datos
+  public function __construct( $database_name, $db = null )
   {
     $this->database_name = $database_name;
+    $this->db = $db;
   }
 
   // Definimos los parámetro del objeto Update a insertar en la consulta
@@ -184,15 +192,20 @@ class Update extends Query
   // Función para ejecutar el SQL
   public function exec_sql()
   {
-    $db = new pl_model( $this->database_name );
-
     // Creamos la consulta
     $sql = $this->create_sql();
 
-    // Ejecutamos la consulta
-    $query = $db->pl_query( $sql );
+    if( $this->db == null )
+    {
+      $db = new pl_model( $this->database_name );
 
-    $db->pl_close();
+      // Ejecutamos la consulta
+      $query = $db->pl_query( $sql );
+    }
+    else
+    {
+      $query = $this->db->pl_query( $sql );
+    }
 
     return $query;
   }
@@ -202,9 +215,10 @@ class Update extends Query
 class Select extends Query
 {
   // Asignamos el nombre de la base de datos
-  public function __construct( $database_name )
+  public function __construct( $database_name, $db = null )
   {
     $this->database_name = $database_name;
+    $this->db = $db;
   }
 
   // Definimos los parámetros del objeto Select a insertar en la consulta
@@ -347,15 +361,20 @@ class Select extends Query
   // Función para ejecutar el SQL
   public function exec_sql()
   {
-    $db = new pl_model( $this->database_name );
-
     // Creamos la consulta
     $sql = $this->create_sql();
 
-    // Ejecutamos la consulta
-    $query = $db->pl_query( $sql );
+    if( $this->db == null )
+    {
+      $db = new pl_model( $this->database_name );
 
-    $db->pl_close();
+      // Ejecutamos la consulta
+      $query = $db->pl_query( $sql );
+    }
+    else
+    {
+      $query = $this->db->pl_query( $sql );
+    }
 
     return $query;
   }
@@ -365,9 +384,10 @@ class Select extends Query
 class Insert extends Query
 {
   // Asignamos el nombre de la base de datos
-  public function __construct( $database_name )
+  public function __construct( $database_name, $db = null )
   {
     $this->database_name = $database_name;
+    $this->db = $db;
   }
 
   // Inicializamos las variables de la consulta
@@ -431,15 +451,20 @@ class Insert extends Query
   // Función para ejecutar el SQL
   public function exec_sql()
   {
-    $db = new pl_model( $this->database_name );
-
     // Creamos la consulta
     $sql = $this->create_sql();
 
-    // Ejecutamos la consulta
-    $query = $db->pl_query( $sql );
+    if( $this->db == null )
+    {
+      $db = new pl_model( $this->database_name );
 
-    $db->pl_close();
+      // Ejecutamos la consulta
+      $query = $db->pl_query( $sql );
+    }
+    else
+    {
+      $query = $this->db->pl_query( $sql );
+    }
 
     return $query;
   }

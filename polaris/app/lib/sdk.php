@@ -122,7 +122,7 @@ function pl_log( $arr, $replace = false )
  */
 function pl_vc ()
 {
-  $arr = scandir( '/var/www/html/polaris/polaris/storage/app/backup/' );
+  $arr = scandir( '/var/www/html/andromeda/polaris/polaris/storage/app/backup/' );
 
   $num_files = count( $arr ) - 2;
 
@@ -131,7 +131,7 @@ function pl_vc ()
     if( in_array( $backup, [ '.', '..' ] ) )
       continue;
 
-    $filemtime = date( "d/m/y H:i:s", @filemtime( '/var/www/html/polaris/polaris/storage/app/backup/' . $backup ) );
+    $filemtime = date( "d/m/y H:i:s", @filemtime( '/var/www/html/andromeda/polaris/polaris/storage/app/backup/' . $backup ) );
     $backup = str_replace( array( 'polaris_', '.sql' ), '', $backup );
     $backup = substr( $backup, 0, 20 );
     $key_buffer = ( $key - 2 );
@@ -201,7 +201,7 @@ function pl_get( $var )
   return $value;
 }
 
-function pl_curl( $url, $data = [] )
+function pl_curl( $url, $data = [], $username = null, $password = null )
 {
   // Iniciamos el cURL
   $ch = curl_init();
@@ -209,6 +209,12 @@ function pl_curl( $url, $data = [] )
   // Insertamos la URL del endpoint
   curl_setopt( $ch, CURLOPT_URL, $url );
   curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+
+  if( $username != null && $password != null )
+  {
+    curl_setopt( $ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC );
+    curl_setopt( $ch, CURLOPT_USERPWD, "$username:$password" );
+  }
 
   // Si hay campos post, los añadimos
   if( count ( $data ) > 0 )
@@ -227,6 +233,26 @@ function pl_curl( $url, $data = [] )
   curl_close( $ch );
 
   return [ $result, $http_code ];
+}
+
+// Devuelve el último ID generado (autonumérico) en una tabla
+function pl_db_last_id( $db )
+{
+	$sql = "select last_insert_id() as last_id";
+
+	$query = $db->query( $sql );
+	if( $query && $row = $query->fetch_assoc() )
+	{
+		$value = $row['last_id'];
+
+	  $query->close();
+	}
+	else
+	{
+		$value = 0;
+	}
+	
+	return $value;
 }
 
 ?>

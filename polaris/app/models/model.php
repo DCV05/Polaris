@@ -52,7 +52,7 @@ class pl_model extends mysqli
    * @param string $sql
    * @return array $value
    * */ 
-  public function pl_query( $sql, $redis = true, )
+  public function pl_query( $sql, $redis = true )
   {
     // Inicializamos el array a devolver
     $value = [];
@@ -245,6 +245,8 @@ class pl_model extends mysqli
     // Conulta SQL
     $sql = "create table {$table_name} ({$combined_fields})";
 
+    print $sql; exit;
+
     // Ejecutamos la consulta
     $query = $this->pl_query( $sql );
   }
@@ -298,7 +300,7 @@ class pl_model extends mysqli
   public function pl_migration_backup_database( $host, $user, $password, $db_name, $path_backup, $ip = '127.0.0.1' )
   {
     // Calculamos el nombre del backup usando la fecha actual
-    $date = floor( microtime(true) * 1000 );
+    $date = floor( microtime( true ) * 1000 );
     $hash = hash( 'ripemd160', $date );
 
     $backup_file_name = escapeshellarg("{$db_name}_{$hash}.sql");

@@ -2,7 +2,7 @@ polaris/resources/views/*
 polaris/storage/app/backup/*
 polaris/storage/app/log/*
 polaris/storage/cache/log/*
-polaris/config/config.php
+polaris/app/config/config.php
 old
 debug.php
 debug

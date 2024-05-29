@@ -8,7 +8,7 @@ class pl_template_engine
 
 	// Variables de caché
 	protected $cache_enabled  = true;
-	protected $cache_path     = '/var/www/html/polaris/polaris/storage/cache';
+	protected $cache_path     = '/var/www/html/andromeda/polaris/polaris/storage/cache';
 	protected $cache_lifetime = 300;
 
 	/**
@@ -21,7 +21,7 @@ class pl_template_engine
 		$template_path,
 		$cache_enabled  = true,
 		$cache_lifetime = 10,
-		$cache_path     = '/var/www/html/polaris/polaris/storage/cache'
+		$cache_path     = '/var/www/html/andromeda/polaris/polaris/storage/cache'
 	)
 	{
 		$this->template_path    = $template_path;
@@ -97,7 +97,7 @@ class pl_template_engine
 		}
 		else // En otro caso
 		{
-			// Capturamos el contenido del script sin mandarlo al navegador
+			// Capturamos el contenido del script sin mandarlo al naandromedador
 			ob_start();
 
 			// Capturamos el contenido de la plantilla y la compilamos
@@ -115,13 +115,13 @@ class pl_template_engine
 				}
 
 				// Capturamos el resultado en la ruta cache_file
-				// Enviamos el contenido del buffer al navegador ( ob_get_flush )
+				// Enviamos el contenido del buffer al naandromedador ( ob_get_flush )
 				// La función de LOCK_EX es evitar que, mientras se está escribiendo el archivo, no haya otro proceso que pueda escirbir dentro de él
 				file_put_contents( $cache_file, ob_get_flush(), LOCK_EX );
 			}
 			else
 			{
-				// En el caso de que la caché no esté habilitada, limpia el buffer de salida ( el del navegador), y no envía nada al cliente.
+				// En el caso de que la caché no esté habilitada, limpia el buffer de salida ( el del naandromedador), y no envía nada al cliente.
 				ob_end_clean();
 			}
 
