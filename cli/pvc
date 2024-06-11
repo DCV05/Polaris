@@ -7,7 +7,7 @@ $ip = explode( ' ', $_SERVER['SSH_CLIENT'] )[0];
 define( 'IP', $ip );
 
 // Definimos las credenciales de MySQL
-$path = "/var/www/html/ai/polaris/polaris";
+$path = __DIR__ . '/polaris';
 define( 'PATH', $path );
 define( 'PATH_BACKUP', PATH . '/storage/app/backup/' );
 

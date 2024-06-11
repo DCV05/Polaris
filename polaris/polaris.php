@@ -10,23 +10,21 @@ ini_set( 'display_startup_errors', 1 );
 error_reporting( E_ALL );
 
 // Incluímos las librerías de Polaris
-include( 'app/config/config.php'                );
+include( 'app/config/config.php'            );
 include( 'app/models/orm.php'               ); // ORM
 include( 'app/models/model.php'             ); // MySQL y MongoDB
 include( 'app/redis/redis.php'              ); // Redis
 include( 'app/view_engine/view_engine.php'  ); // Motor de plantillas
 include( 'routes/route.php'                 ); // Rutas de acceso
 
-include( 'app/lib/sdk.php'   );
-include( 'app/lib/linux.php' );
+include( 'app/lib/sdk.php'   ); // SDK
+include( 'app/lib/linux.php' ); // Funciones Linux
 
 function pl_session()
 {
   // Iniciamos la sesión
   if( !session_id() )
-  {
     session_start();
-  }
 
   /*
   Array | $_SERVER
@@ -73,11 +71,11 @@ function pl_session()
 
   // Capturamos las variables de la SESSION
   $_SESSION['polaris'] = [
-    'domain' 		    => $_SERVER['HTTP_HOST']
-  ,	'url_abs' 		  => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $url_relative
-  ,	'url_relative' 	=> $url_relative
-  ,	'url_get' 		  => $_GET
-  ,	'document_root'	=> $_SERVER['DOCUMENT_ROOT'] . '/polaris'
+      'domain' 		    => $_SERVER['HTTP_HOST']
+    ,	'url_abs' 		  => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $url_relative
+    ,	'url_relative' 	=> $url_relative
+    ,	'url_get' 		  => $_GET
+    ,	'document_root'	=> $_SERVER['DOCUMENT_ROOT'] . '/polaris'
   ];
 
   // Saneamos las variables del GET aplicando un filtro de URLs
