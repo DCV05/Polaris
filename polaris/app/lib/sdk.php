@@ -122,20 +122,28 @@ function pl_log( $arr, $replace = false )
  */
 function pl_vc ()
 {
-  $arr = scandir( '/var/www/html/andromeda/polaris/polaris/storage/app/backup/' );
+  $arr = scandir( "{$_SESSION['polaris']['document_root']}/polaris/storage/app/backup/" );
 
   $num_files = count( $arr ) - 2;
 
+  // Iteramos los ficheros
   foreach ( $arr as $key => $backup )
   {
+    // Si son directorios de sistema, nos los saltamos
     if( in_array( $backup, [ '.', '..' ] ) )
       continue;
 
-    $filemtime = date( "d/m/y H:i:s", @filemtime( '/var/www/html/andromeda/polaris/polaris/storage/app/backup/' . $backup ) );
-    $backup = str_replace( array( 'polaris_', '.sql' ), '', $backup );
-    $backup = substr( $backup, 0, 20 );
+    // Capturamos las variables de formato
+    $db_name = explode( '_', $backup )[0];
+    $filemtime = date( "d/m/y H:i:s", @filemtime( "{$_SESSION['polaris']['document_root']}/polaris/storage/app/backup/" . $backup) );
+
+    // Calculamos el nombre del hash a mostrar
+    $backup = str_replace( array( $db_name, '.sql', '_' ), '', $backup );
+    $backup = substr( $backup, 0, 6 );
+
     $key_buffer = ( $key - 2 );
 
+    // Formato ASCII
     if( ( $key - 2 ) == 0 )
       $chr = "\u{250C} {$key_buffer} - ";
     elseif( ( $key - 2 ) === $num_files - 1 )
@@ -143,25 +151,10 @@ function pl_vc ()
     else
       $chr = "\u{251C} {$key_buffer} - ";
 
-    echo $chr . $backup . ' - ' . $filemtime . "\n";
+    // Imprimimos los directorios
+    echo "{$chr} {$backup} - {$filemtime} - {$db_name}<br>";
   }
-
-  /*
-    // Iniciamos la conexión con la DB con los registros de los backups
-    $db = new pl_model( 'polaris_vc' );
-
-    // Consula SQL para imprimir todos los registros
-    $query = new Select( 'polaris_vc' );
-    $versions_detail = $query
-      ->select([ [ 'vc_main' => [] ] ])
-      ->from( 'vc_main' )
-      ->order_by( 'version_id asc' )
-      ->exec_sql();
-
-    // Imprimimos el id de la versión y el Hash
-    foreach ( $versions_detail as $version_detail )
-      print $version_detail['version_id'] . ' => ' . substr( $version_detail['version_hash'], 0, 6) . "\n";
-  */
+  
 }
 
 //-------------------------------------------------------------------------------
