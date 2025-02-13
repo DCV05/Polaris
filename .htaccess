@@ -1,0 +1,12 @@
+# No mostramos los ficheros
+Options -Indexes
+
+# Determinamos que el fichero principal es el kernel.php
+DirectoryIndex kernel.php
+
+# Configuramos que siempre que entremos en esta carpeta, siempre se ejecute el kernel.php
+# Además, en el caso de que se intenten capturar archivos físicos o directorios, estarán disponibles
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^.*$ kernel.php [L,QSA]
