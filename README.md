@@ -174,11 +174,11 @@ Access to the new page with `localhost/debug`.
 Polaris includes a **View Engine** that allows dynamic rendering of HTML templates using embedded placeholders and function calls.
 
 ### View Engine Features
-- **Dynamic Variable Injection**: Use [[ variable_name ]] to insert dynamic content, including page-specific metadata, database values, and system configurations.
-- **Function Execution**: Call general functions using [[ func | &function_name ]]. Functions prefixed with & are global functions defined in app.php.
-- **Controller Method Execution**: Call methods from the current page’s controller using [[ func | method_name ]] (without &).
-- **Asset Path Resolution**: Dynamically load scripts, stylesheets, or assets using [[ polaris.actual_dir ]]/[[ polaris.page.page_title ]].js.
-- **Modular Interface Loading**: Dynamically include UI components defined in app.php with [[ func | &panel_interface ]].
+- **Dynamic Variable Injection**: Use `[[ variable_name ]]` to insert dynamic content, including page-specific metadata, database values, and system configurations.
+- **Function Execution**: Call general functions using `[[ func | &function_name ]]`. Functions prefixed with `&` are global functions defined in app.php.
+- **Controller Method Execution**: Call methods from the current page’s controller using `[[ func | method_name ]]` (without `&`).
+- **Asset Path Resolution**: Dynamically load scripts, stylesheets, or assets using `[[ polaris.actual_dir ]]/[[ polaris.page.page_title ]].js`.
+- **Modular Interface Loading**: Dynamically include UI components defined in app.php with `[[ func | &panel_interface ]]`.
 
 ### Example View Template
 
