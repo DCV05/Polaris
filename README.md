@@ -2,7 +2,7 @@
 
 Polaris is a lightweight, modular **PHP framework** designed for structured and scalable web applications. It follows the **Model-View-Controller (MVC)** pattern and provides built-in support for dynamic routing, database interaction, and template rendering.
 
-Polaris is optimized for **fast development**, ensuring clean separation of concerns and simplifying common backend operations. It is particularly suited for **projects requiring efficient AJAX handling, modular routing, and security-first design**.
+Polaris is optimized for **fast development**, ensuring clean separation of concerns and simplifying common backend operations. It is particularly suited for **projects requiring efficient AJAX handling and modular routing**.
 
 ## Key Features
 
