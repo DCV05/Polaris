@@ -137,8 +137,8 @@ INSERT INTO `polaris_pages` (`url`, `redirect`, `page_title`, `file`, `title_seo
 Once the entry is created in the database, ensure the corresponding files exist within the `pages/` directory:
 
 ```bash
-mkdir -p src/pages/Debug
-cd src/pages/Debug
+mkdir -p src/pages/Debug/Debug
+cd src/pages/Debug/Debug
 ```
 
 Then create the required files:
@@ -157,12 +157,16 @@ class DebugController
 {
     public function index(): void
     {
+        print 'Hello Polaris';
         return;
     }
 }
 
 ?>
 ```
+
+### Access to the page
+Access to the new page with `localhost/debug`.
 
 ---
 
